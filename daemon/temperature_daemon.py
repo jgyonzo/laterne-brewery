@@ -3,6 +3,7 @@ from w1thermsensor import W1ThermSensor
 import pymysql.cursors
 import RPi.GPIO as GPIO
 import time
+import sys
 
 #pines para valvula
 output_pin_1 = 16 #Valvula sensor 1. GPIO23
@@ -98,14 +99,14 @@ while True:
         output_4_val = False if (sensor4_temp >= (temp_sens_4 + tolerancia)) else True if (sensor4_temp <= (temp_sens_4 - tolerancia)) else output_4_val
         output_5_val = False if (sensor5_temp >= (temp_sens_5 + tolerancia)) else True if (sensor5_temp <= (temp_sens_5 - tolerancia)) else output_5_val
 
-        output_pump_val = not output_1_val or not output_2_val or not output_3_val or not output_4_val or not output_5_val 
+        output_pump_val = output_1_val and output_2_val and output_3_val and output_4_val and output_5_val 
 
         GPIO.output(output_pin_1, output_1_val)
         GPIO.output(output_pin_2, output_2_val)
         GPIO.output(output_pin_3, output_3_val)
         GPIO.output(output_pin_4, output_4_val)
         GPIO.output(output_pin_5, output_5_val)
-        GPIO.output(pump_pin, pump_aux_flag)
+        GPIO.output(pump_pin, output_pump_val)
 
         print("Output 1 on? --> ", not output_1_val)
         print("Output 2 on? --> ", not output_2_val)
@@ -126,10 +127,7 @@ while True:
             with connection.cursor() as cursor:
                 # Create a new record
                 #cursor.execute("""INSERT INTO temps (temp1,temp2) VALUES (%s,%s) """,(sensor1_temp,sensor2_temp))
-                cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s,
-                                    temp1_cfg = %s, temp2_cfg = %s, temp3_cfg = %s, temp4_cfg = %s, temp5_cfg = %s,
-                                    output1 = %s, output2 = %s, output3 = %s, output4 = %s, output5 = %s, 
-                                    WHERE 1=1 """,(sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,
+                cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s, temp1_cfg = %s, temp2_cfg = %s, temp3_cfg = %s, temp4_cfg = %s, temp5_cfg = %s, output1 = %s, output2 = %s, output3 = %s, output4 = %s, output5 = %s WHERE 1=1 """,(sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,
                                                    temp_sens_1,temp_sens_2,temp_sens_3,temp_sens_4,temp_sens_5,
                                                    output_1_val, output_2_val, output_3_val, output_4_val, output_5_val 
                                                    ))
@@ -141,4 +139,4 @@ while True:
 
         time.sleep(read_interval)
     except:
-        print("GENERIC ERROR");
+        print("Unexpected error:", sys.exc_info()[0])
