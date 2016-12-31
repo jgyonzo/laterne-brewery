@@ -10,19 +10,19 @@ output_pin_2 = 12 #Valvula sensor 2. GPIO18
 output_pin_3 = 11 #Valvula sensor 3. GPIO17
 output_pin_4 = 13 #Valvula sensor 4. GPIO27
 output_pin_5 = 15 #Valvula sensor 5. GPIO22
-pump_pin = 7 #Bomba. GPIO4
+pump_pin = 40 #Bomba. GPIO21
 
-temp_sens_1 = 22 #FV1
-temp_sens_2 = 22 #FV2
-temp_sens_3 = 22 #BBT1
-temp_sens_4 = 22 #BBT2
-temp_sens_5 = 22 #FV3
+temp_sens_1 = 25 #FV1
+temp_sens_2 = 25 #FV2
+temp_sens_3 = 25 #BBT1
+temp_sens_4 = 25 #BBT2
+temp_sens_5 = 25 #FV3
 
 tolerancia = 0.3
 
 read_interval = 5 #in seconds
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 GPIO.setup(output_pin_1, GPIO.OUT)
 GPIO.setup(output_pin_2, GPIO.OUT)
@@ -30,12 +30,12 @@ GPIO.setup(output_pin_3, GPIO.OUT)
 GPIO.setup(output_pin_4, GPIO.OUT)
 GPIO.setup(output_pin_5, GPIO.OUT)
 GPIO.setup(pump_pin, GPIO.OUT)
-GPIO.output(output_pin_1, False)
-GPIO.output(output_pin_2, False)
-GPIO.output(output_pin_3, False)
-GPIO.output(output_pin_4, False)
-GPIO.output(output_pin_5, False)
-GPIO.output(pump_pin, False)
+GPIO.output(output_pin_1, True)
+GPIO.output(output_pin_2, True)
+GPIO.output(output_pin_3, True)
+GPIO.output(output_pin_4, True)
+GPIO.output(output_pin_5, True)
+GPIO.output(pump_pin, True)
 
 
 sensor1 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c24fafff")
@@ -103,49 +103,50 @@ while True:
         finally:
             connection.close()
 
-        pump_aux_flag = False
+        pump_aux_flag = True
         
         if sensor1_temp >= (temp_sens_1 + tolerancia):
-            GPIO.output(output_pin_1, True)
-            pump_aux_flag = True
+            GPIO.output(output_pin_1, False)
+            pump_aux_flag = False
             print("ON output 1")
         elif sensor1_temp <= (temp_sens_1 - tolerancia):
-            GPIO.output(output_pin_1, False)
+            GPIO.output(output_pin_1, True)
             print("OFF output 1")
 
         if sensor2_temp >= (temp_sens_2 + tolerancia):
-            GPIO.output(output_pin_2, True)
-            pump_aux_flag = True
+            GPIO.output(output_pin_2, False)
+            pump_aux_flag = False
             print("ON output 2")
         elif sensor2_temp <= (temp_sens_2 - tolerancia):
-            GPIO.output(output_pin_2, False)
+            GPIO.output(output_pin_2, True)
             print("OFF output 2")
 
         if sensor3_temp >= (temp_sens_3 + tolerancia):
-            GPIO.output(output_pin_3, True)
-            pump_aux_flag = True
+            GPIO.output(output_pin_3, False)
+            pump_aux_flag = False
             print("ON output 3")
         elif sensor3_temp <= (temp_sens_3 - tolerancia):
-            GPIO.output(output_pin_3, False)
+            GPIO.output(output_pin_3, True)
             print("OFF output 3")
 
         if sensor4_temp >= (temp_sens_4 + tolerancia):
-            GPIO.output(output_pin_4, True)
-            pump_aux_flag = True
+            GPIO.output(output_pin_4, False)
+            pump_aux_flag = False
             print("ON output 4")
         elif sensor4_temp <= (temp_sens_4 - tolerancia):
-            GPIO.output(output_pin_4, False)
+            GPIO.output(output_pin_4, True)
             print("OFF output 4")
 
         if sensor5_temp >= (temp_sens_5 + tolerancia):
-            GPIO.output(output_pin_5, True)
-            pump_aux_flag = True
+            GPIO.output(output_pin_5, False)
+            pump_aux_flag = False
             print("ON output 5")
         elif sensor5_temp <= (temp_sens_5 - tolerancia):
-            GPIO.output(output_pin_5, False)
+            GPIO.output(output_pin_5, True)
             print("OFF output 5")
 
         GPIO.output(pump_pin, pump_aux_flag)
+        print("Pump on --> ", not pump_aux_flag)
 
         time.sleep(read_interval)
     except:

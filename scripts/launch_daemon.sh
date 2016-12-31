@@ -1,0 +1,1 @@
+python3 temperature_daemon.py

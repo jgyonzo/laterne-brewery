@@ -1,0 +1,1 @@
+pkill -9 -f temperature_daemon.py
