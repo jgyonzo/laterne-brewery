@@ -37,7 +37,8 @@ GPIO.output(output_pin_4, True)
 GPIO.output(output_pin_5, True)
 GPIO.output(pump_pin, True)
 
-
+#Para tener en cuenta: si no encuentra el sensor, rompe el script. Esto deberia
+#no importar cuando se haga el refactor y detecte los sensores con listsensor
 sensor1 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c24fafff")
 sensor2 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c2ac01ff")
 sensor3 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "80000028104d")
