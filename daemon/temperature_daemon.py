@@ -45,15 +45,22 @@ sensor3 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "80000028104d")
 sensor4 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c2a10cff")
 sensor5 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c2a8a1ff")
 
-
-sensor1_temp = 0.0
-sensor2_temp = 0.0
-sensor3_temp = 0.0
-sensor4_temp = 0.0
-sensor5_temp = 0.0
-
 while True:
     try:
+        #Init temporal variables
+        sensor1_temp = 0.0
+        sensor2_temp = 0.0
+        sensor3_temp = 0.0
+        sensor4_temp = 0.0
+        sensor5_temp = 0.0
+        output_1_val = True
+        output_2_val = True
+        output_3_val = True
+        output_4_val = True
+        output_5_val = True
+        output_pump_val = True
+
+        #Read sensors
         try:
             sensor1_temp = sensor1.get_temperature()
         except:
@@ -84,7 +91,29 @@ while True:
         print("Sensor 3 temp %.2f" % sensor3_temp)
         print("Sensor 4 temp %.2f" % sensor4_temp)
         print("Sensor 5 temp %.2f" % sensor5_temp)
-        
+
+        output_1_val = False if (sensor1_temp >= (temp_sens_1 + tolerancia)) else True if (sensor1_temp <= (temp_sens_1 - tolerancia)) else output_1_val
+        output_2_val = False if (sensor2_temp >= (temp_sens_2 + tolerancia)) else True if (sensor2_temp <= (temp_sens_2 - tolerancia)) else output_2_val
+        output_3_val = False if (sensor3_temp >= (temp_sens_3 + tolerancia)) else True if (sensor3_temp <= (temp_sens_3 - tolerancia)) else output_3_val
+        output_4_val = False if (sensor4_temp >= (temp_sens_4 + tolerancia)) else True if (sensor4_temp <= (temp_sens_4 - tolerancia)) else output_4_val
+        output_5_val = False if (sensor5_temp >= (temp_sens_5 + tolerancia)) else True if (sensor5_temp <= (temp_sens_5 - tolerancia)) else output_5_val
+
+        output_pump_val = not output_1_val or not output_2_val or not output_3_val or not output_4_val or not output_5_val 
+
+        GPIO.output(output_pin_1, output_1_val)
+        GPIO.output(output_pin_2, output_2_val)
+        GPIO.output(output_pin_3, output_3_val)
+        GPIO.output(output_pin_4, output_4_val)
+        GPIO.output(output_pin_5, output_5_val)
+        GPIO.output(pump_pin, pump_aux_flag)
+
+        print("Output 1 on? --> ", not output_1_val)
+        print("Output 2 on? --> ", not output_2_val)
+        print("Output 3 on? --> ", not output_3_val)
+        print("Output 4 on? --> ", not output_4_val)
+        print("Output 5 on? --> ", not output_5_val)
+        print("Pump on? --> ", not output_pump_val)
+
         # Connect to the database
         connection = pymysql.connect(host='localhost',
                                      user='root',
@@ -97,57 +126,18 @@ while True:
             with connection.cursor() as cursor:
                 # Create a new record
                 #cursor.execute("""INSERT INTO temps (temp1,temp2) VALUES (%s,%s) """,(sensor1_temp,sensor2_temp))
-                cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s WHERE 1=1 """,(sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp))
+                cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s,
+                                    temp1_cfg = %s, temp2_cfg = %s, temp3_cfg = %s, temp4_cfg = %s, temp5_cfg = %s,
+                                    output1 = %s, output2 = %s, output3 = %s, output4 = %s, output5 = %s, 
+                                    WHERE 1=1 """,(sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,
+                                                   temp_sens_1,temp_sens_2,temp_sens_3,temp_sens_4,temp_sens_5,
+                                                   output_1_val, output_2_val, output_3_val, output_4_val, output_5_val 
+                                                   ))
 
             connection.commit()
 
         finally:
             connection.close()
-
-        pump_aux_flag = True
-        
-        if sensor1_temp >= (temp_sens_1 + tolerancia):
-            GPIO.output(output_pin_1, False)
-            pump_aux_flag = False
-            print("ON output 1")
-        elif sensor1_temp <= (temp_sens_1 - tolerancia):
-            GPIO.output(output_pin_1, True)
-            print("OFF output 1")
-
-        if sensor2_temp >= (temp_sens_2 + tolerancia):
-            GPIO.output(output_pin_2, False)
-            pump_aux_flag = False
-            print("ON output 2")
-        elif sensor2_temp <= (temp_sens_2 - tolerancia):
-            GPIO.output(output_pin_2, True)
-            print("OFF output 2")
-
-        if sensor3_temp >= (temp_sens_3 + tolerancia):
-            GPIO.output(output_pin_3, False)
-            pump_aux_flag = False
-            print("ON output 3")
-        elif sensor3_temp <= (temp_sens_3 - tolerancia):
-            GPIO.output(output_pin_3, True)
-            print("OFF output 3")
-
-        if sensor4_temp >= (temp_sens_4 + tolerancia):
-            GPIO.output(output_pin_4, False)
-            pump_aux_flag = False
-            print("ON output 4")
-        elif sensor4_temp <= (temp_sens_4 - tolerancia):
-            GPIO.output(output_pin_4, True)
-            print("OFF output 4")
-
-        if sensor5_temp >= (temp_sens_5 + tolerancia):
-            GPIO.output(output_pin_5, False)
-            pump_aux_flag = False
-            print("ON output 5")
-        elif sensor5_temp <= (temp_sens_5 - tolerancia):
-            GPIO.output(output_pin_5, True)
-            print("OFF output 5")
-
-        GPIO.output(pump_pin, pump_aux_flag)
-        print("Pump on --> ", not pump_aux_flag)
 
         time.sleep(read_interval)
     except:
