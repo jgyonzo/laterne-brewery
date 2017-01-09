@@ -17,11 +17,11 @@ pump_pin = 40 #Bomba. GPIO21
 output_pin_chiller = 11 #Rele banco de frio CHANGEME
 output_pin_cold_room = 11 #Rele camara de frio CHANGEME
 
-temp_sens_1 = 25 #FV1
-temp_sens_2 = 25 #FV2
-temp_sens_3 = 25 #BBT1
-temp_sens_4 = 25 #BBT2
-temp_sens_5 = 25 #FV3
+temp_sens_1 = 1 #FV1
+temp_sens_2 = 21 #FV2
+temp_sens_3 = 50 #BBT1
+temp_sens_4 = 50 #BBT2
+temp_sens_5 = 28 #FV3
 
 temp_chiller = 10 #banco de frio temp CHANGEME
 temp_cold_room = 10 #camara de frio temp CHANGEME
