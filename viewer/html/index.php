@@ -9,6 +9,7 @@
 	}
 
 	$lastTemps = getLastTemps($mysqli);
+	$coldTemps = getColdTemps($mysqli);
 	
 	$mysqli->close();
 
@@ -28,6 +29,14 @@
 		return $res;
 	}
 	
+	function getColdTemps($mysqli) {
+		$stmt = $mysqli->prepare("SELECT  temp_cold_room , temp_chiller , temp_cold_room_cfg , temp_chiller_cfg , output_chiller , output_cold_room , timer_off_chiller , timer_off_cold_room FROM temps_cold ORDER BY created_at DESC LIMIT 1");
+		$stmt->execute();
+		$stmt->bind_result($res['temp_cold_room'], $res['temp_chiller'], $res['temp_cold_room_cfg'], $res['temp_chiller_cfg'], $res['output_chiller'], $res['output_cold_room'], $res['timer_off_chiller'], $res['timer_off_cold_room']);
+		$stmt->fetch();
+		return $res;
+	}
+
 	function tempParts($temp, $index) {
 		$parts = explode('.', number_format($temp, 1));
 		return $parts[$index];
@@ -107,6 +116,31 @@
 						<div class="denem">
 						  <div class="deneme">
 							0<span>.0</span><strong>&deg;</strong>
+						  </div>
+						</div>
+					  </div>
+					</div>
+				</div>
+
+
+				<div class="label">Banco [<?php print $coldTemps['temp_chiller']; ?> &deg;] <?php if($coldTemps['output_chiller'] == 0) print "[on]"; ?><?php if($coldTemps['timer_off_chiller'] == 1) print "[d]"; ?> </div> <div class="label">Cámara [<?php print $coldTemps['temp_cold_room']; ?> &deg;] <?php if($coldTemps['output_cold_room'] == 0) print "[on]"; ?><?php if($coldTemps['timer_off_cold_room'] == 1) print "[d]"; ?></div>
+				<div class="de">
+					<div class="den">
+					  <div class="dene">
+						<div class="denem">
+						  <div class="deneme">
+							<?php print tempParts($coldTemps['temp_chiller'], 0); ?><span>.<?php  print tempParts($coldTemps['temp_chiller'], 1); ?></span><strong>&deg;</strong>
+						  </div>
+						</div>
+					  </div>
+					</div>
+				</div>
+				<div class="de">
+					<div class="den">
+					  <div class="dene">
+						<div class="denem">
+						  <div class="deneme">
+							<?php print tempParts($coldTemps['temp_cold_room'], 0); ?><span>.<?php print tempParts($coldTemps['temp_cold_room'], 1); ?></span><strong>&deg;</strong>
 						  </div>
 						</div>
 					  </div>
