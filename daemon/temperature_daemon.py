@@ -14,8 +14,8 @@ output_pin_3 = 11 #Valvula sensor 3. GPIO17
 output_pin_4 = 13 #Valvula sensor 4. GPIO27
 output_pin_5 = 15 #Valvula sensor 5. GPIO22
 pump_pin = 40 #Bomba. GPIO21
-output_pin_chiller = 11 #Rele banco de frio CHANGEME
-output_pin_cold_room = 11 #Rele camara de frio CHANGEME
+output_pin_chiller = 36 #Rele banco de frio GPIO16
+output_pin_cold_room = 32 #Rele camara de frio GPIO12
 
 temp_sens_1 = 1 #FV1
 temp_sens_2 = 21 #FV2
@@ -23,13 +23,13 @@ temp_sens_3 = 50 #BBT1
 temp_sens_4 = 50 #BBT2
 temp_sens_5 = 28 #FV3
 
-temp_chiller = 10 #banco de frio temp CHANGEME
+temp_chiller = 3 #banco de frio temp CHANGEME
 temp_cold_room = 10 #camara de frio temp CHANGEME
 
-timer_on_chiller = 6 #tiempo de prendido de banco de frio en horas
-timer_on_cold_room = 6  #tiempo de prendido de camara de frio en horas
-timer_off_chiller = 0.5 #tiempo de apagado de banco de frio en horas
-timer_off_cold_room = 0.5 #tiempo de apagado de banco de frio en horas
+timer_on_chiller = 0.1 #tiempo de prendido de banco de frio en horas
+timer_on_cold_room = 0.1  #tiempo de prendido de camara de frio en horas
+timer_off_chiller = 6 #tiempo de apagado de banco de frio en minutos
+timer_off_cold_room = 6 #tiempo de apagado de banco de frio en minutos
 
 tolerancia = 0.3
 
@@ -63,8 +63,8 @@ sensor3 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "80000028104d")
 sensor4 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c2a10cff")
 sensor5 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c2a8a1ff")
 
-sensorChiller = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c2a8a1ff") #CHANGEME
-sensorColdRoom = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c2a8a1ff") #CHANGEME
+sensorChiller = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c23d9eff") #CHANGEME
+sensorColdRoom = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c28f00ff") #CHANGEME
 
 while True:
     try:
@@ -134,6 +134,7 @@ while True:
         print("Sensor 5 temp %.2f" % sensor5_temp)
         print("Sensor chiller temp %.2f" % sensorChiller_temp)
         print("Sensor cold room temp %.2f" % sensorColdRoom_temp)
+        print ("......................")
 
         output_1_val = False if (sensor1_temp >= (temp_sens_1 + tolerancia)) else True if (sensor1_temp <= (temp_sens_1 - tolerancia)) else output_1_val
         output_2_val = False if (sensor2_temp >= (temp_sens_2 + tolerancia)) else True if (sensor2_temp <= (temp_sens_2 - tolerancia)) else output_2_val
@@ -191,45 +192,60 @@ while True:
         try:
             with connection.cursor() as cursor:
                 cursor.execute("""SELECT last_start_cold_room, last_start_chiller FROM temps_cold""")
-                for (last_start_cold_room, last_start_chiller) in cursor:
-                    #check timers
-                    time_chiller_to_stop = last_start_chiller + timedelta(hours=timer_on_chiller)
-                    time_cold_room_to_stop = last_start_cold_room + timedelta(hours=timer_on_cold_room)
-                    time_chiller_to_start_again = time_chiller_to_stop + timedelta(minutes=timer_off_chiller)
-                    time_cold_room_to_start_again = time_cold_room_to_stop + timedelta(minutes=timer_off_cold_room)
-                    now = datetime.now()
-                    if (time_chiller_to_stop <= now and time_chiller_to_start_again >= now)
-                        force_chiller_off = True
-                    if (time_cold_room_to_stop <= now and time_cold_room_to_start_again >= now)
-                        force_cold_room_off = True
-                    if (time_chiller_to_stop <= now and time_chiller_to_start_again <= now)
-                        restart_chiller_date = True
-                    if (time_cold_room_to_stop <= now and time_cold_room_to_start_again <= now)
-                        restart_cold_room_date = True
+                result = cursor.fetchone()
+                #check timers
+                time_chiller_to_stop = result['last_start_chiller'] + timedelta(hours=timer_on_chiller)
+                time_cold_room_to_stop = result['last_start_cold_room'] + timedelta(hours=timer_on_cold_room)
+                time_chiller_to_start_again = time_chiller_to_stop + timedelta(minutes=timer_off_chiller)
+                time_cold_room_to_start_again = time_cold_room_to_stop + timedelta(minutes=timer_off_cold_room)
+                now = datetime.now()
+                print ("......................")
+
+                print ("now:")
+                print (now)
+                print ("time chiller to stop:")
+                print (time_chiller_to_stop)
+                print ("time chiller to start again:")
+                print (time_chiller_to_start_again)
+                print ("time cold room to stop:")
+                print (time_cold_room_to_stop)
+                print ("time cold room to start again:")
+                print (time_cold_room_to_start_again)
+
+                print ("......................")
+                if (time_chiller_to_stop <= now and time_chiller_to_start_again >= now):
+                    force_chiller_off = True
+                if (time_cold_room_to_stop <= now and time_cold_room_to_start_again >= now):
+                    force_cold_room_off = True
+                if (time_chiller_to_stop <= now and time_chiller_to_start_again <= now):
+                    restart_chiller_date = True
+                if (time_cold_room_to_stop <= now and time_cold_room_to_start_again <= now):
+                    restart_cold_room_date = True
                         
         finally:
             connection.close()
 
 
-        if (force_chiller_off)
+        if (force_chiller_off):
             output_chiller_val = True
-        else
+        else:
             output_chiller_val = False if (sensorChiller_temp >= (temp_chiller + tolerancia)) else True if (sensorChiller_temp <= (temp_chiller - tolerancia)) else output_chiller_val
 
-        if (force_cold_room_off)
+        if (force_cold_room_off):
             output_cold_room_val = True
-        else
+        else:
             output_cold_room_val = False if (sensorColdRoom_temp >= (temp_cold_room + tolerancia)) else True if (sensorColdRoom_temp <= (temp_cold_room - tolerancia)) else output_cold_room_val
 
         GPIO.output(output_pin_chiller, output_chiller_val)
         GPIO.output(output_pin_cold_room, output_cold_room_val)
 
-        print("Chiller on? --> ", not output_pin_chiller)
+        print("Chiller on? --> ", not output_chiller_val)
         print("Cold room on? --> ", not output_cold_room_val)
         print("Chiller defrost? --> ", force_chiller_off)
         print("Cold room defrost? --> ", force_cold_room_off)
         print("restart chiller date in DB? --> ", restart_chiller_date)
         print("restart cold room date in DB? --> ", restart_cold_room_date)
+        print ("......................")
 
         #update chiller and cold room values in DB
         connection = pymysql.connect(host='localhost',
@@ -247,9 +263,9 @@ while True:
                                                    output_chiller_val, output_cold_room_val,
                                                    force_chiller_off, force_cold_room_off 
                                                    ))
-                if (restart_chiller_date)
+                if (restart_chiller_date):
                     cursor.execute("""UPDATE temps_cold SET last_start_chiller = %s""", datetime.now())
-                if (restart_cold_room_date)
+                if (restart_cold_room_date):
                     cursor.execute("""UPDATE temps_cold SET last_start_cold_room = %s""", datetime.now())
 
             connection.commit()

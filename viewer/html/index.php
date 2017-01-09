@@ -30,7 +30,7 @@
 	}
 	
 	function getColdTemps($mysqli) {
-		$stmt = $mysqli->prepare("SELECT  temp_cold_room , temp_chiller , temp_cold_room_cfg , temp_chiller_cfg , output_chiller , output_cold_room , timer_off_chiller , timer_off_cold_room FROM temps_cold ORDER BY created_at DESC LIMIT 1");
+		$stmt = $mysqli->prepare("SELECT  temp_cold_room , temp_chiller , temp_cold_room_cfg , temp_chiller_cfg , output_chiller , output_cold_room , timer_off_chiller , timer_off_cold_room FROM temps_cold");
 		$stmt->execute();
 		$stmt->bind_result($res['temp_cold_room'], $res['temp_chiller'], $res['temp_cold_room_cfg'], $res['temp_chiller_cfg'], $res['output_chiller'], $res['output_cold_room'], $res['timer_off_chiller'], $res['timer_off_cold_room']);
 		$stmt->fetch();
