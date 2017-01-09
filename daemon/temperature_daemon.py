@@ -28,8 +28,8 @@ temp_cold_room = 10 #camara de frio temp CHANGEME
 
 timer_on_chiller = 0.1 #tiempo de prendido de banco de frio en horas
 timer_on_cold_room = 0.1  #tiempo de prendido de camara de frio en horas
-timer_off_chiller = 6 #tiempo de apagado de banco de frio en minutos
-timer_off_cold_room = 6 #tiempo de apagado de banco de frio en minutos
+timer_off_chiller = 2 #tiempo de apagado de banco de frio en minutos
+timer_off_cold_room = 2 #tiempo de apagado de banco de frio en minutos
 
 tolerancia = 0.3
 
