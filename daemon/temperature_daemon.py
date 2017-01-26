@@ -13,11 +13,11 @@ output_pin_4 = 13 #Valvula sensor 4. GPIO27
 output_pin_5 = 15 #Valvula sensor 5. GPIO22
 pump_pin = 40 #Bomba. GPIO21
 
-temp_sens_1 = 50 #FV1
-temp_sens_2 = 10 #FV2
-temp_sens_3 = 29 #BBT1
+temp_sens_1 = 12 #FV1
+temp_sens_2 = 20 #FV2
+temp_sens_3 = 2 #BBT1
 temp_sens_4 = 50 #BBT2
-temp_sens_5 = 20 #FV3
+temp_sens_5 = 50 #FV3
 
 tolerancia = 0
 
