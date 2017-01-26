@@ -184,7 +184,7 @@ while True:
                 # Create a new record
                 #cursor.execute("""INSERT INTO temps (temp1,temp2) VALUES (%s,%s) """,(sensor1_temp,sensor2_temp))
                 cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s, temp6 = %s, temp7 = %s, temp1_cfg = %s, temp2_cfg = %s, temp3_cfg = %s, temp4_cfg = %s, temp5_cfg = %s, temp6_cfg = %s, temp7_cfg = %s, output1 = %s, output2 = %s, output3 = %s, output4 = %s, output5 = %s, output6 = %s, output7 = %s WHERE 1=1 """,
-                                                (sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,sensor6_temp,sensor7_temp,
+                                                (sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,sensorBancoFrio_temp,sensorCamaraFrio_temp,
                                                    temp_sens_1,temp_sens_2,temp_sens_3,temp_sens_4,temp_sens_5,temp_sens_banco_frio,temp_sens_camara_frio,
                                                    output_1_val, output_2_val, output_3_val, output_4_val, output_5_val, output_banco_frio_val, output_pin_camara_frio
                                                    ))
