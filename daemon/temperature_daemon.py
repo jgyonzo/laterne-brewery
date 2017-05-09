@@ -17,14 +17,14 @@ output_pin_camara_frio = 32 #Rele camara de frio. GPIO12
 
 pump_pin = 40 #Bomba. GPIO21
 
-temp_sens_1 = 12 #FV1
-temp_sens_2 = 20 #FV2
-temp_sens_3 = 2 #BBT1
-temp_sens_4 = 50 #BBT2
-temp_sens_5 = 50 #FV3
+temp_sens_1 = 21 #FV1
+temp_sens_2 = 21 #FV2
+temp_sens_3 = 1 #BBT1
+temp_sens_4 = 5 #BBT2
+temp_sens_5 = 23 #FV3
 
-temp_sens_banco_frio = 4
-temp_sens_camara_frio = 11
+temp_sens_banco_frio = 1
+temp_sens_camara_frio = 10
 
 tolerancia = 0
 
