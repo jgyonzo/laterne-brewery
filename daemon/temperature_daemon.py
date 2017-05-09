@@ -92,19 +92,19 @@ try:
 except Exception as e:
     print("ERROR READING SENSOR 5")
 try:
-    sensor6 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "")
+    sensor6 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c23b0eff")
 except Exception as e:
     print("ERROR READING SENSOR 6")
 try:
-    sensor7 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "")
+    sensor7 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0215c23835ff")
 except Exception as e:
     print("ERROR READING SENSOR 7")
 try:
-    sensor8 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "")
+    sensor8 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c247ffff")
 except Exception as e:
     print("ERROR READING SENSOR 8")
 try:
-    sensor9 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "")
+    sensor9 = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0115c019c3ff")
 except Exception as e:
     print("ERROR READING SENSOR 9")
 # try:
@@ -278,10 +278,10 @@ while True:
             with connection.cursor() as cursor:
                 # Create a new record
                 #temp6 y temp7 son banco de frio y camara de frio. El de ambiente (temp9) no lleva cfg ni output
-                cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s, temp6 = %s, temp7 = %s, temp8 = %s,temp9 = %s, temp10 = %s, temp11 = %s, temp12 = %s, temp1_cfg = %s, temp2_cfg = %s, temp3_cfg = %s, temp4_cfg = %s, temp5_cfg = %s, temp6_cfg = %s, temp7_cfg = %s, temp8_cfg = %s, temp9_cfg = %s, temp10_cfg = %s, temp11_cfg = %s, temp12_cfg = %s, output1 = %s, output2 = %s, output3 = %s, output4 = %s, output5 = %s, output6 = %s, output7 = %s, output8 = %s, output9 = %s, output10 = %s, output11 = %s, output12 = %s WHERE 1=1 """,
-                                                (sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,sensorBancoFrio_temp,sensorCamaraFrio_temp,sensor6_temp,sensor7_temp,sensor8_temp,sensor9_temp,0,
-                                                   temp_sens_1,temp_sens_2,temp_sens_3,temp_sens_4,temp_sens_5,temp_sens_banco_frio,temp_sens_camara_frio,temp_sens_6,temp_sens_7,temp_sens_8,0,0,
-                                                   output_1_val, output_2_val, output_3_val, output_4_val, output_5_val, output_banco_frio_val, output_pin_camara_frio,output_6_val, output_7_val, output_8_val, False, False
+                cursor.execute("""UPDATE temps4 SET temp1 = %s,temp2 = %s, temp3 = %s, temp4 = %s, temp5 = %s, temp6 = %s, temp7 = %s, temp8 = %s,temp9 = %s, temp10 = %s, temp11 = %s, temp12 = 0, temp1_cfg = %s, temp2_cfg = %s, temp3_cfg = %s, temp4_cfg = %s, temp5_cfg = %s, temp6_cfg = %s, temp7_cfg = %s, temp8_cfg = %s, temp9_cfg = %s, temp10_cfg = %s, temp11_cfg = 0, temp12_cfg = 0, output1 = %s, output2 = %s, output3 = %s, output4 = %s, output5 = %s, output6 = %s, output7 = %s, output8 = %s, output9 = %s, output10 = %s, output11 = 0, output12 = 0 WHERE 1=1 """,
+                                                (sensor1_temp,sensor2_temp,sensor3_temp,sensor4_temp,sensor5_temp,sensorBancoFrio_temp,sensorCamaraFrio_temp,sensor6_temp,sensor7_temp,sensor8_temp,sensor9_temp,
+                                                   temp_sens_1,temp_sens_2,temp_sens_3,temp_sens_4,temp_sens_5,temp_sens_banco_frio,temp_sens_camara_frio,temp_sens_6,temp_sens_7,temp_sens_8,
+                                                   output_1_val, output_2_val, output_3_val, output_4_val, output_5_val, output_banco_frio_val, output_pin_camara_frio,output_6_val, output_7_val, output_8_val
                                                    ))
 
             connection.commit()
