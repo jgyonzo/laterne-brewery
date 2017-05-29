@@ -1,1 +1,1 @@
-python3 turn_off_pump.py
+python3 ~/dev/laterne-brewery/scripts/turn_off_pump.py

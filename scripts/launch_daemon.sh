@@ -1,1 +1,1 @@
-python3 temperature_daemon.py
+python3 ~/dev/laterne-brewery/daemon/temperature_daemon.py
