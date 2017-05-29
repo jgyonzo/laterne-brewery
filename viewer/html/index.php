@@ -1,6 +1,6 @@
 <?php
 	// Make sure you set the database connection on the next line:
-	$mysqli = new mysqli("127.0.0.1", "root", "raspberry", "Temperaturas");
+	$mysqli = new mysqli("127.0.0.1", "root", "Potrero456", "Temperaturas");
 
 	/* check connection */
 	if ($mysqli->connect_errno) {

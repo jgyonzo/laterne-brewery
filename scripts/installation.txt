@@ -1,0 +1,8 @@
+sudo apt-get install mysql-server && sudo apt-get install mysql-client
+sudo apt-get install python3-w1thermsensor
+sudo pip3 install PyMySQL
+sudo apt-get install php5-mysql
+
+cd /var/www
+sudo mv html old_html
+sudo ln -s ~/dev/laterne-brewery/viewer/html html
